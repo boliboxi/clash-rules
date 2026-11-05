@@ -20,14 +20,14 @@ dns:
     - '+.pool.ntp.org'
   # Bootstrap only: resolve DoH hostnames and the VLESS server hostname.
   # Public overseas resolvers; not ISP/router DNS.
+  # 启动引导 DNS
   default-nameserver:
-  - https://1.1.1.1/dns-query
-  - https://1.0.0.1/dns-query
-
+    - 223.5.5.5
+    - 119.29.29.29
+  # 仅解析 VPS 节点域名
   proxy-server-nameserver:
-  - https://1.1.1.1/dns-query
-  - https://1.0.0.1/dns-query
-  # Normal DNS queries use encrypted DoH through the proxy group.
+    - 223.5.5.5
+    - 119.29.29.29
   nameserver:
     - 'https://dns.google/dns-query#PROXY-OUT'
     - 'https://cloudflare-dns.com/dns-query#PROXY-OUT'
