@@ -100,14 +100,14 @@ rules:
   - DOMAIN-SUFFIX,cursor.com,🤖 AI
   - DOMAIN-SUFFIX,cursor.sh,🤖 AI
   - DOMAIN-SUFFIX,cursorapi.com,🤖 AI
-  # IP / DNS leak-test sites should use the proxy
-  - DOMAIN-SUFFIX,ip.sb,🌍 Global
-  - DOMAIN-SUFFIX,ipify.org,🌍 Global
-  - DOMAIN-SUFFIX,ipinfo.io,🌍 Global
+  # DNS / IP Leak Test 强制代理
   - DOMAIN-SUFFIX,browserleaks.com,🌍 Global
   - DOMAIN-SUFFIX,dnsleaktest.com,🌍 Global
   - DOMAIN-SUFFIX,ipleak.net,🌍 Global
   - DOMAIN-SUFFIX,whoer.net,🌍 Global
+  - DOMAIN-SUFFIX,ipinfo.io,🌍 Global
+  - DOMAIN-SUFFIX,ipify.org,🌍 Global
+  - DOMAIN-SUFFIX,ip.sb,🌍 Global
   # Other international services
   - RULE-SET,GitHub,🌍 Global
   - RULE-SET,YouTube,🎬 Media
