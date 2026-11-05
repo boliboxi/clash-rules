@@ -1,42 +1,6 @@
 # 3x-ui Global Routing Rules remote fragment.
 # Enable "Use DNS from remote rules" in 3x-ui because this file contains dns:.
 # Do not add proxies:, mixed-port, mode, or tun: here.
-
-dns:
-  enable: true
-  listen: 127.0.0.1:1053
-  ipv6: false
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
-  fake-ip-filter:
-    - '*.lan'
-    - '*.local'
-    - '+.home.arpa'
-    - '+.msftconnecttest.com'
-    - '+.msftncsi.com'
-    - 'time.windows.com'
-    - 'time.nist.gov'
-    - '+.pool.ntp.org'
-  # Bootstrap only: resolve DoH hostnames and the VLESS server hostname.
-  # Public overseas resolvers; not ISP/router DNS.
-  # 启动引导 DNS
-  default-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  # 仅解析 VPS 节点域名
-  proxy-server-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  nameserver:
-    - 'https://dns.google/dns-query#PROXY-OUT'
-    - 'https://cloudflare-dns.com/dns-query#PROXY-OUT'
-  fallback:
-    - 'https://dns.quad9.net/dns-query#PROXY-OUT'
-  fallback-filter:
-    geoip: true
-    geoip-code: CN
-
 proxy-groups:
   - name: PROXY-OUT
     type: select
