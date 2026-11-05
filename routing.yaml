@@ -20,8 +20,13 @@ dns:
     - '+.pool.ntp.org'
   # Bootstrap only: resolve DoH hostnames and the VLESS server hostname.
   # Public overseas resolvers; not ISP/router DNS.
-  default-nameserver: [1.1.1.1, 8.8.8.8]
-  proxy-server-nameserver: [1.1.1.1, 8.8.8.8]
+  default-nameserver:
+  - https://1.1.1.1/dns-query
+  - https://1.0.0.1/dns-query
+
+  proxy-server-nameserver:
+  - https://1.1.1.1/dns-query
+  - https://1.0.0.1/dns-query
   # Normal DNS queries use encrypted DoH through the proxy group.
   nameserver:
     - 'https://dns.google/dns-query#PROXY-OUT'
@@ -36,7 +41,6 @@ proxy-groups:
   - name: PROXY-OUT
     type: select
     include-all: true
-    exclude-type: direct
   - name: '🤖 AI'
     type: select
     proxies: [PROXY-OUT]
@@ -152,6 +156,13 @@ rules:
   - DOMAIN-SUFFIX,mzstatic.com,🍎 Apple
   - DOMAIN-SUFFIX,apple-cloudkit.com,🍎 Apple
   # Mainland China direct
+    # Private and local network direct
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT,no-resolve
   - MATCH,🌍 Global
