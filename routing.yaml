@@ -1,1 +1,157 @@
+# 3x-ui Global Routing Rules remote fragment.
+# Enable "Use DNS from remote rules" in 3x-ui because this file contains dns:.
+# Do not add proxies:, mixed-port, mode, or tun: here.
 
+dns:
+  enable: true
+  listen: 127.0.0.1:1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - '*.lan'
+    - '*.local'
+    - '+.home.arpa'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+    - 'time.windows.com'
+    - 'time.nist.gov'
+    - '+.pool.ntp.org'
+  # Bootstrap only: resolve DoH hostnames and the VLESS server hostname.
+  # Public overseas resolvers; not ISP/router DNS.
+  default-nameserver: [1.1.1.1, 8.8.8.8]
+  proxy-server-nameserver: [1.1.1.1, 8.8.8.8]
+  # Normal DNS queries use encrypted DoH through the proxy group.
+  nameserver:
+    - 'https://dns.google/dns-query#PROXY-OUT'
+    - 'https://cloudflare-dns.com/dns-query#PROXY-OUT'
+  fallback:
+    - 'https://dns.quad9.net/dns-query#PROXY-OUT'
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+
+proxy-groups:
+  - name: PROXY-OUT
+    type: select
+    include-all: true
+    exclude-type: direct
+  - name: '🤖 AI'
+    type: select
+    proxies: [PROXY-OUT]
+  - name: '🌍 Global'
+    type: select
+    proxies: [PROXY-OUT]
+  - name: '🎬 Media'
+    type: select
+    proxies: [PROXY-OUT]
+  - name: '🍎 Apple'
+    type: select
+    proxies: [DIRECT, PROXY-OUT]
+
+rule-providers:
+  OpenAI:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/OpenAI.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+  Claude:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/Claude.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+  GitHub:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/GitHub.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+  Google:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/Google.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+  YouTube:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/YouTube.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+  Telegram:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rules/Telegram.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml
+    interval: 86400
+    proxy: PROXY-OUT
+
+rules:
+  # OpenAI / ChatGPT
+  - DOMAIN-SUFFIX,chatgpt.com,🤖 AI
+  - DOMAIN-SUFFIX,openai.com,🤖 AI
+  - DOMAIN-SUFFIX,oaistatic.com,🤖 AI
+  - DOMAIN-SUFFIX,oaiusercontent.com,🤖 AI
+  - RULE-SET,OpenAI,🤖 AI
+  # Claude
+  - DOMAIN-SUFFIX,claude.ai,🤖 AI
+  - DOMAIN-SUFFIX,anthropic.com,🤖 AI
+  - DOMAIN-SUFFIX,claudeusercontent.com,🤖 AI
+  - RULE-SET,Claude,🤖 AI
+  # Gemini / Google AI before general Google rules
+  - DOMAIN,gemini.google.com,🤖 AI
+  - DOMAIN,aistudio.google.com,🤖 AI
+  - DOMAIN,ai.google.dev,🤖 AI
+  - DOMAIN,generativelanguage.googleapis.com,🤖 AI
+  - DOMAIN,makersuite.google.com,🤖 AI
+  # Perplexity AI
+  - DOMAIN-SUFFIX,perplexity.ai,🤖 AI
+  - DOMAIN-SUFFIX,pplx.ai,🤖 AI
+  # Microsoft Copilot
+  - DOMAIN-SUFFIX,copilot.microsoft.com,🤖 AI
+  # GitHub Copilot
+  - DOMAIN-SUFFIX,githubcopilot.com,🤖 AI
+  - DOMAIN-SUFFIX,copilot.githubusercontent.com,🤖 AI
+  - DOMAIN,copilot-proxy.githubusercontent.com,🤖 AI
+  - DOMAIN,api.githubcopilot.com,🤖 AI
+  # Cursor AI
+  - DOMAIN-SUFFIX,cursor.com,🤖 AI
+  - DOMAIN-SUFFIX,cursor.sh,🤖 AI
+  - DOMAIN-SUFFIX,cursorapi.com,🤖 AI
+  # IP / DNS leak-test sites should use the proxy
+  - DOMAIN-SUFFIX,ip.sb,🌍 Global
+  - DOMAIN-SUFFIX,ipify.org,🌍 Global
+  - DOMAIN-SUFFIX,ipinfo.io,🌍 Global
+  - DOMAIN-SUFFIX,browserleaks.com,🌍 Global
+  - DOMAIN-SUFFIX,dnsleaktest.com,🌍 Global
+  - DOMAIN-SUFFIX,ipleak.net,🌍 Global
+  - DOMAIN-SUFFIX,whoer.net,🌍 Global
+  # Other international services
+  - RULE-SET,GitHub,🌍 Global
+  - RULE-SET,YouTube,🎬 Media
+  - RULE-SET,Telegram,🌍 Global
+  - RULE-SET,Google,🌍 Global
+  # Apple services: direct by default; can be switched in the Apple group
+  - DOMAIN-SUFFIX,apple.com,🍎 Apple
+  - DOMAIN-SUFFIX,icloud.com,🍎 Apple
+  - DOMAIN-SUFFIX,icloud-content.com,🍎 Apple
+  - DOMAIN-SUFFIX,mzstatic.com,🍎 Apple
+  - DOMAIN-SUFFIX,apple-cloudkit.com,🍎 Apple
+  # Mainland China direct
+  - GEOSITE,CN,DIRECT
+  - GEOIP,CN,DIRECT,no-resolve
+  - MATCH,🌍 Global
