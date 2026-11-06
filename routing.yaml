@@ -1,5 +1,4 @@
 # 3x-ui Global Routing Rules remote fragment.
-# Enable "Use DNS from remote rules" in 3x-ui because this file contains dns:.
 # Do not add proxies:, mixed-port, mode, or tun: here.
 proxy-groups:
   - name: PROXY-OUT
@@ -7,7 +6,7 @@ proxy-groups:
     include-all: true
   - name: '🤖 AI'
     type: select
-    proxies: [IPRoyal-HTTP, PROXY-OUT]
+    proxies: [ PROXY-OUT]
   - name: '🌍 Global'
     type: select
     proxies: [PROXY-OUT]
@@ -21,12 +20,13 @@ proxy-groups:
 rule-providers:
   OpenAI:
     type: http
-    behavior: classical
-    format: yaml
-    path: ./rules/OpenAI.yaml
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml
+    behavior: domain
+    format: mrs
+    path: ./rules/OpenAI-Site.mrs
+    url: https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/OpenAI/OpenAI-Site.mrs
     interval: 86400
     proxy: PROXY-OUT
+  
   Claude:
     type: http
     behavior: classical
@@ -35,6 +35,7 @@ rule-providers:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml
     interval: 86400
     proxy: PROXY-OUT
+  
   GitHub:
     type: http
     behavior: classical
@@ -43,14 +44,7 @@ rule-providers:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml
     interval: 86400
     proxy: PROXY-OUT
-  Google:
-    type: http
-    behavior: classical
-    format: yaml
-    path: ./rules/Google.yaml
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
-    interval: 86400
-    proxy: PROXY-OUT
+  
   YouTube:
     type: http
     behavior: classical
@@ -59,12 +53,79 @@ rule-providers:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml
     interval: 86400
     proxy: PROXY-OUT
+  
   Telegram:
     type: http
-    behavior: classical
-    format: yaml
-    path: ./rules/Telegram.yaml
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml
+    behavior: domain
+    format: mrs
+    path: ./rules/Telegram-Site.mrs
+    url: https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Telegram/Telegram-Site.mrs
+    interval: 86400
+    proxy: PROXY-OUT
+  
+  
+  Discord-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Discord/Discord-Site.mrs
+    path: ./ruleset/Discord-Site.mrs
+    interval: 86400
+    proxy: PROXY-OUT
+
+  Netflix-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Netflix/Netflix-Site.mrs
+    path: ./ruleset/Netflix-Site.mrs
+    interval: 86400
+    proxy: PROXY-OUT
+
+  TikTok-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/TikTok/TikTok-Site.mrs
+    path: ./ruleset/TikTok-Site.mrs
+    interval: 86400
+    proxy: PROXY-OUT
+  
+  Bilibili-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Bilibili/Bilibili-Site.mrs'
+    path: ./ruleset/Bilibili-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+  
+  Bilibili-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: 'https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Bilibili/Bilibili-IP.mrs'
+    path: ./ruleset/Bilibili-IP.mrs
+    proxy: DIRECT
+    interval: 86400
+  
+  
+  Google-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/Google/Google-Site.mrs'
+    path: ./ruleset/Google-Site.mrs
+    interval: 86400
+    proxy: PROXY-OUT
+  
+  
+  GoogleFCM-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://cdn.jsdmirror.com/gh/HosheaPDNX/rule-set@V2.0.0/mihomo/GoogleFCM/GoogleFCM-Site.mrs'
+    path: ./ruleset/GoogleFCM-Site.mrs
     interval: 86400
     proxy: PROXY-OUT
 
@@ -112,7 +173,16 @@ rules:
   - RULE-SET,GitHub,🌍 Global
   - RULE-SET,YouTube,🎬 Media
   - RULE-SET,Telegram,🌍 Global
-  - RULE-SET,Google,🌍 Global
+  - RULE-SET,GoogleFCM-Site,🌍 Global
+  - DOMAIN-SUFFIX,googleapis.com,🌍 Global
+  - RULE-SET,Google-Site,🌍 Global
+  # 新增国际服务分流
+  - RULE-SET,Discord-Site,🌍 Global
+  - RULE-SET,Netflix-Site,🎬 Media
+  - RULE-SET,TikTok-Site,🎬 Media
+  # Bilibili 国内直连
+  - RULE-SET,Bilibili-Site,DIRECT
+  - RULE-SET,Bilibili-IP,DIRECT,no-resolve
   # Apple services: direct by default; can be switched in the Apple group
   - DOMAIN-SUFFIX,apple.com,🍎 Apple
   - DOMAIN-SUFFIX,icloud.com,🍎 Apple
@@ -120,7 +190,7 @@ rules:
   - DOMAIN-SUFFIX,mzstatic.com,🍎 Apple
   - DOMAIN-SUFFIX,apple-cloudkit.com,🍎 Apple
   # Mainland China direct
-    # Private and local network direct
+  # Private and local network direct
   - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
   - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
   - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
