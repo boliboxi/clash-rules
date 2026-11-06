@@ -7,7 +7,7 @@ proxy-groups:
     include-all: true
   - name: '🤖 AI'
     type: select
-    proxies: [PROXY-OUT]
+    proxies: [IPRoyal-HTTP, PROXY-OUT]
   - name: '🌍 Global'
     type: select
     proxies: [PROXY-OUT]
